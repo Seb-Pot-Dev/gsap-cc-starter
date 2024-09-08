@@ -1,4 +1,6 @@
-import { Link } from "react-router-dom"; // Importation du composant Link pour la navigation
+import { Link } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
 
 // Tableau contenant les différentes animations GSAP avec leur titre, description, et chemin de navigation
 const animations = [
@@ -6,7 +8,7 @@ const animations = [
 		title: "GSAP To",
 		description:
 			"La méthode to() est utilisée pour animer un élément unique d'un état initial à un état final.",
-		path: "/gsapto", // Chemin de navigation
+		path: "/gsapto",
 	},
 	{
 		title: "GSAP From",
@@ -45,8 +47,27 @@ const animations = [
 	},
 ];
 
-// Composant Home qui affiche la liste des animations disponibles
+// Composant Home qui affiche la liste des animations de GSAP
 const Home = () => {
+
+	const listItemRefs = useRef([]); // Utilisation de useRef pour stocker les références des éléments de la liste
+	// Fonction pour déclencher l'animation au survol
+	const handleMouseEnter = (index) => {
+		gsap.to(listItemRefs.current[index], {
+			scale: 1.025,
+			duration: 0.1,
+			ease: "power1.inOut",
+		});
+	};
+	// Fonction pour revenir à l'état initial lorsque le survol se termine
+	const handleMouseLeave = (index) => {
+		gsap.to(listItemRefs.current[index], {
+			scale: 1,
+			duration: 0.2,
+			ease: "power1.inOut",
+		});
+	};
+
 	return (
 		<main className="container">
 			<div className="flex flex-col">
@@ -59,11 +80,13 @@ const Home = () => {
 						<li
 							key={index}
 							className="flex flex-row gap-2 p-5 hover:bg-zinc-800/50 rounded-lg"
+							ref={(el) => (listItemRefs.current[index] = el)} // Stocke la référence de l'élément
+							onMouseEnter={() => handleMouseEnter(index)} // Déclenche l'animation au survol
+							onMouseLeave={() => handleMouseLeave(index)} // Réinitialise l'animation à la fin du survol
 						>
 							<p>
 								<span className="text-sm font-bold text-zinc-50">
-									{index + 1}.{" "}
-									{/* Affiche l'index (1, 2, 3, etc.) */}
+									{index + 1}.
 								</span>
 							</p>
 							<div className="flex flex-col gap-2 flex-1">
